@@ -1,48 +1,48 @@
-const fs = require('fs')
 const TourFunc = require('./Bussiness')
-import { Request, Response, NextFunction } from 'express'
-const toursData = require('../../data')
+import { Request, Response } from 'express'
 
-const checkId = async (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-  _value: string,
-) => {
-  const result = await TourFunc.checkValidId(request.params.id, toursData)
-  if (result) {
-    return response.status(404).json({ result })
+const createTour = async (request: Request, response: Response) => {
+  try {
+    const tourResult = await TourFunc.createTour(request.body)
+    response.status(200).json({ tourResult })
+  } catch (error) {
+    response.status(404).json({ error })
   }
-  next()
 }
 
 const getTours = async (request: Request, response: Response) => {
-  const tourResult = await TourFunc.getTours(toursData)
-  response.status(200).json({ tourResult })
+  try {
+    const result = await TourFunc.getTours()
+    response.status(200).json({ result })
+  } catch (error) {
+    response.status(404).json({ error })
+  }
 }
 
-const updateTours = (request: Request, response: Response) => {
-  const newId = toursData[toursData.length - 1].id + 1
-  const newTour = Object.assign({ id: newId }, request.body)
-  toursData.push(newTour)
-  fs.writeFile(
-    `${__dirname}/data/simple_data.json`,
-    JSON.stringify(toursData),
-    (error: { message: string }) => {
-      if (error) {
-        return response.status(500).json({
-          message: 'Error writing file',
-          error: error.message,
-        })
-      }
-      response.status(201).json({
-        message: 'Sucess',
-        result: toursData.length,
-        data: {
-          tours: toursData,
-        },
-      })
-    },
-  )
+const getTourById = async (request: Request, response: Response) => {
+  try {
+    const result = await TourFunc.getTourById(request.params.id)
+    response.status(200).json({ result })
+  } catch (error) {
+    response.status(404).json({ error })
+  }
 }
-export { checkId, getTours, updateTours }
+
+const updateTours = async (request: Request, response: Response) => {
+  try {
+    const result = await TourFunc.updateTour(request.params.id, request.body)
+    response.status(200).json({ result })
+  } catch (error) {
+    response.status(404).json({ error })
+  }
+}
+
+const deleteTour = async (request: Request, response: Response) => {
+  try {
+    const result = await TourFunc.deleteTour(request.params.id)
+    response.status(200).json({ result })
+  } catch (error) {
+    response.status(404).json({ error })
+  }
+}
+export { getTours, updateTours, createTour, getTourById, deleteTour }

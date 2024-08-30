@@ -1,25 +1,87 @@
+import { RESONSE_MESSAGE } from '../Constants/Messages'
+import Tour from './Schema'
+
+interface TourDocument {
+  name: string
+  duration: number
+  price: number
+}
 class TourFunc {
-  async getTours(data: string[]) {
-    if (data.length === 0)
+  async createTour(request: Request) {
+    const newTour = await Tour.create(request)
+    return {
+      message: 'Sucessfully Create New Tour',
+      success: true,
+      tourData: newTour,
+    }
+  }
+
+  async getTours() {
+    const getTours = await Tour.find()
+    if (getTours.length === 0)
       return {
-        message: 'No Record Has been Found',
-        result: false,
-        tourLength: 0,
+        message: RESONSE_MESSAGE.noRecordFound,
+        success: false,
         tourData: [],
       }
     return {
       message: 'Success',
-      result: true,
-      tourLength: data.length,
-      tourData: data,
+      success: true,
+      tourData: getTours,
     }
   }
-  async checkValidId(id: string, tourData: string[]) {
-    if (parseInt(id) > tourData.length) {
+
+  async getTourById(id: string) {
+    const tourResult: TourDocument | null = await Tour.findById(id)
+    if (tourResult === null)
       return {
-        status: 'fail',
-        message: 'Invalid ID',
+        message: RESONSE_MESSAGE.noRecordFound,
+        success: false,
+        tourData: [],
       }
+    return {
+      message: 'Success',
+      success: true,
+      tourData: tourResult,
+    }
+  }
+
+  async updateTour(id: string, body: Partial<TourDocument>) {
+    const tourResult: TourDocument | null = await Tour.findByIdAndUpdate(
+      id,
+      body,
+      {
+        new: true,
+        runValidators: true,
+      },
+    )
+    if (tourResult === null)
+      return {
+        message: RESONSE_MESSAGE.noRecordFound,
+        success: false,
+        tourData: [],
+      }
+    return {
+      message: 'Success',
+      success: true,
+      tourData: tourResult,
+    }
+  }
+
+  async deleteTour(id: string) {
+    const tourResult: TourDocument | null = await Tour.findByIdAndDelete(id)
+
+    if (!tourResult) {
+      return {
+        message: 'Not Record Found or already Deleted',
+        success: false,
+        tourData: [],
+      }
+    }
+    return {
+      message: 'Success',
+      success: true,
+      tourData: [],
     }
   }
 }
