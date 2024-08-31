@@ -1,11 +1,12 @@
 import { RESONSE_MESSAGE } from '../Constants/Messages'
 import Tour from './Schema'
-
+const APIFeature = require('./../utils/apiFeatures')
 interface TourDocument {
   name: string
   duration: number
   price: number
 }
+
 class TourFunc {
   async createTour(request: Request) {
     const newTour = await Tour.create(request)
@@ -16,9 +17,14 @@ class TourFunc {
     }
   }
 
-  async getTours() {
-    const getTours = await Tour.find()
-    if (getTours.length === 0)
+  async getTours(request: any) {
+    const feature = new APIFeature(Tour.find(), request.query)
+      .filter()
+      .sort()
+      .fields()
+      .pagination()
+    let tours = await feature.query
+    if (tours.length === 0)
       return {
         message: RESONSE_MESSAGE.noRecordFound,
         success: false,
@@ -27,7 +33,7 @@ class TourFunc {
     return {
       message: 'Success',
       success: true,
-      tourData: getTours,
+      tourData: tours,
     }
   }
 
