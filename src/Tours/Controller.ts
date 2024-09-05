@@ -15,7 +15,6 @@ const getTours = async (request: Request, response: Response) => {
     const result = await TourFunc.getTours(request)
     response.status(200).json({ result })
   } catch (error) {
-    console.log(error)
     response.status(404).json({ error })
   }
 }
