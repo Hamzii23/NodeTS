@@ -1,0 +1,2 @@
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/tours\",\"status\":\"500\",\"responseTime\":\"1360\"}","timestamp":"2024-09-08T15:17:01.235Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/api/v1/tours\",\"status\":\"500\",\"responseTime\":\"1360\"}","timestamp":"2024-09-08T15:17:50.898Z"}

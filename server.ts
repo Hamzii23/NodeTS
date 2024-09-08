@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 const dotenv = require('dotenv')
 
-process.on('uncaughtException', (error: any) => {
+process.on('uncaughtException', (error: Error) => {
   console.log(error, 'Error')
   process.exit(1)
 })
@@ -25,7 +25,7 @@ const server = app.listen(PORT, () => {
   console.log('Server running at PORT: ', PORT)
 })
 
-process.on('unhandledRejection', (error: any) => {
+process.on('unhandledRejection', (error: Error) => {
   console.log(error.name, 'Error')
   server.close(() => {
     process.exit(1)
