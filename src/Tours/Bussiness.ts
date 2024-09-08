@@ -38,18 +38,8 @@ class TourFunc {
   }
 
   async getTourById(id: string) {
-    const tourResult: TourDocument | null = await Tour.findById(id)
-    if (tourResult === null)
-      return {
-        message: RESONSE_MESSAGE.noRecordFound,
-        success: false,
-        tourData: [],
-      }
-    return {
-      message: 'Success',
-      success: true,
-      tourData: tourResult,
-    }
+    const tourResult = await Tour.findById(id)
+    return tourResult
   }
 
   async updateTour(id: string, body: Partial<TourDocument>) {
@@ -92,4 +82,4 @@ class TourFunc {
   }
 }
 
-module.exports = new TourFunc()
+export = new TourFunc()

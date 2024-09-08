@@ -8,7 +8,7 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       maxlength: [40, 'A tour name must or equal 40 char'],
-      minlength: [40, 'A tour name must or equal 10 char'],
+      minlength: [10, 'A tour name must greater or equal 10 char'],
     },
     rating: {
       type: Number,
