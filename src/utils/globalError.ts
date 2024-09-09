@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 const AppError = require('../utils/appError')
+import StatusCode from './httpStatusCode'
 interface GlobalError {
   statusCode: number
   status: string
@@ -28,7 +29,7 @@ const sendErrorProd = (error: SendError, response: Response) => {
   } else {
     //---------------Programming Error, Dont send to client
     console.error(error, '<=-=-=-=-=-= || Error ||=-=-=-=-=>')
-    response.status(500).json({
+    response.status(StatusCode.INTERNAL_SERVER).json({
       status: 'Error',
       message: 'Something went wrong!',
     })
@@ -70,7 +71,6 @@ module.exports = (
       errmsg: error.errmsg,
       code: error.code,
     }
-
     if (err.name === 'CastError') err = handlerCastErrorDB(err)
     if (err.code === 11000) err = handlerDuplicatedErrorDB(err)
     if (err.name === 'ValidationError') err = handlerValidationErrorDB(err)
