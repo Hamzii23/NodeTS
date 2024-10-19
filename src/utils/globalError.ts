@@ -53,6 +53,14 @@ const handlerValidationErrorDB = (err: any) => {
   return new AppError(message, 400)
 }
 
+const handlerJsonWebTokenError = () => {
+  return new AppError('Invalid Token, Please Login again', 401)
+}
+
+const handlerJsonWebTokenExpire = () => {
+  return new AppError('Your Token Has Expired! Please login again', 401)
+}
+
 module.exports = (
   error: SendError,
   request: Request,
@@ -74,6 +82,9 @@ module.exports = (
     if (err.name === 'CastError') err = handlerCastErrorDB(err)
     if (err.code === 11000) err = handlerDuplicatedErrorDB(err)
     if (err.name === 'ValidationError') err = handlerValidationErrorDB(err)
+    if (err.name === 'JsonWebTokenError') err = handlerJsonWebTokenError()
+    if (err.name === 'TokenExpiredError') err = handlerJsonWebTokenExpire()
+
     sendErrorProd(err, response)
   }
 }
