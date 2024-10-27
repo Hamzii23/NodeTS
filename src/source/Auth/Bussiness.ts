@@ -56,23 +56,6 @@ class AuthFuns {
     }
   }
 
-  async getAllUser() {
-    const newUser = await User.find()
-    if (newUser.length >= 1) {
-      return {
-        message: 'Not Record Found or already Deleted',
-        success: true,
-        tourData: newUser,
-      }
-    } else {
-      return {
-        message: 'Not Record Found or already Deleted',
-        success: false,
-        tourData: [],
-      }
-    }
-  }
-
   async forgotPassword(request: Request) {
     // 1) Check the User with Email Does User Exist or Not.
     const { email } = request.body

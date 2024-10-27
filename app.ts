@@ -10,7 +10,8 @@ import logger from './src/utils/logger'
 
 const AppError = require('./src/utils/appError')
 const globalErrorHandler = require('./src/utils/globalError')
-
+const mongoSanitize = require('express-mongo-sanitize')
+const hpp = require('hpp')
 const app = express()
 
 // Set Security HTTP Headers
@@ -49,8 +50,15 @@ const limiter = rateLimit({
 })
 app.use('/api', limiter)
 
+//Body Paser , reading Data from body into req.body
 app.use(express.json({ limit: '10kb' }))
 
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize())
+// Data sanitization against Cross-site scripting attacks (XSS)
+
+// protect against HTTP Parameter Pollution attacks
+app.use(hpp({ whitelist: ['duration'] }))
 //Routes
 app.use('/api/v1/auth', AuthRoutes)
 app.use('/api/v1/tours', toursRoutes)
