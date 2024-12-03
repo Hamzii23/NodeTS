@@ -1,27 +1,85 @@
+import { RESONSE_MESSAGE } from '../Constants/Messages'
+import Tour from './Schema'
+const APIFeature = require('./../utils/apiFeatures')
+interface TourDocument {
+  name: string
+  duration: number
+  price: number
+}
+
 class TourFunc {
-  async getTours(data: string[]) {
-    if (data.length === 0)
+  async createTour(request: Request) {
+    const newTour = await Tour.create(request)
+    return {
+      message: 'Sucessfully Create New Tour',
+      success: true,
+      tourData: newTour,
+    }
+  }
+
+  async getTours(request: any) {
+    const feature = new APIFeature(Tour.find(), request.query)
+      .filter()
+      .sort()
+      .fields()
+      .pagination()
+    let tours = await feature.query
+    if (tours.length === 0)
       return {
-        message: 'No Record Has been Found',
-        result: false,
-        tourLength: 0,
+        message: RESONSE_MESSAGE.noRecordFound,
+        success: false,
         tourData: [],
       }
     return {
       message: 'Success',
-      result: true,
-      tourLength: data.length,
-      tourData: data,
+      success: true,
+      tourData: tours,
     }
   }
-  async checkValidId(id: string, tourData: string[]) {
-    if (parseInt(id) > tourData.length) {
+
+  async getTourById(id: string) {
+    const tourResult = await Tour.findById(id)
+    return tourResult
+  }
+
+  async updateTour(id: string, body: Partial<TourDocument>) {
+    const tourResult: TourDocument | null = await Tour.findByIdAndUpdate(
+      id,
+      body,
+      {
+        new: true,
+        runValidators: true,
+      },
+    )
+    if (tourResult === null)
       return {
-        status: 'fail',
-        message: 'Invalid ID',
+        message: RESONSE_MESSAGE.noRecordFound,
+        success: false,
+        tourData: [],
       }
+    return {
+      message: 'Success',
+      success: true,
+      tourData: tourResult,
+    }
+  }
+
+  async deleteTour(id: string) {
+    const tourResult: TourDocument | null = await Tour.findByIdAndDelete(id)
+
+    if (!tourResult) {
+      return {
+        message: 'Not Record Found or already Deleted',
+        success: false,
+        tourData: [],
+      }
+    }
+    return {
+      message: 'Success',
+      success: true,
+      tourData: [],
     }
   }
 }
 
-module.exports = new TourFunc()
+export = new TourFunc()
